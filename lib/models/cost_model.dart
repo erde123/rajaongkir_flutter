@@ -1,79 +1,127 @@
-class CityModel {
-  Rajaongkir? rajaongkir;
+// "results":[
+//          {
+//             "code":"jne",
+//             "name":"Jalur Nugraha Ekakurir (JNE)",
+//             "costs":[
+//                {
+//                   "service":"OKE",
+//                   "description":"Ongkos Kirim Ekonomis",
+//                   "cost":[
+//                      {
+//                         "value":38000,
+//                         "etd":"4-5",
+//                         "note":""
+//                      }
+//                   ]
+//                },
 
-  CityModel({this.rajaongkir});
+// ignore_for_file: non_constant_identifier_names, unused_import, unnecessary_this, file_names
+import 'dart:ffi';
 
-  CityModel.fromJson(Map<String, dynamic> json) {
-    rajaongkir = json['rajaongkir'] != null
-        ? new Rajaongkir.fromJson(json['rajaongkir'])
-        : null;
-  }
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.rajaongkir != null) {
-      data['rajaongkir'] = this.rajaongkir!.toJson();
-    }
-    return data;
-  }
+class Cost {
+  final int value;
+  final String etd;
+  final String note;
+
+  Cost({
+    required this.value,
+    required this.etd,
+    required this.note,
+  });
+
+  factory Cost.fromJson(Map<String, dynamic> json) => Cost(
+        value: (json["value"]),
+        etd: json["etd"],
+        note: json["note"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "value": value,
+        "etd": etd,
+        "note": note,
+      };
 }
 
-class Rajaongkir {
-  List<Results>? results;
+class Costs {
+  final String service;
+  final String description;
+  final List<Cost> cost;
 
-  Rajaongkir({this.results});
+  Costs({
+    required this.service,
+    required this.description,
+    required this.cost,
+  });
 
-  Rajaongkir.fromJson(Map<String, dynamic> json) {
-    if (json['results'] != null) {
-      results = <Results>[];
-      json['results'].forEach((v) {
-        results!.add(new Results.fromJson(v));
-      });
-    }
-  }
+  factory Costs.fromJson(Map<String, dynamic> json) => Costs(
+        service: json["service"],
+        description: json["description"],
+        cost: List<Cost>.from(json["cost"].map((x) => Cost.fromJson(x))),
+      );
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.results != null) {
-      data['results'] = this.results!.map((v) => v.toJson()).toList();
-    }
-    return data;
-  }
+  Map<String, dynamic> toJson() => {
+        "service": service,
+        "description": description,
+        "cost": List<dynamic>.from(cost.map((x) => x.toJson())),
+      };
 }
 
 class Results {
-  String? cityId;
-  String? provinceId;
-  String? province;
-  String? type;
-  String? cityName;
-  String? postalCode;
+  final String code;
+  final String name;
+  final List<Costs> costs;
 
-  Results(
-      {this.cityId,
-      this.provinceId,
-      this.province,
-      this.type,
-      this.cityName,
-      this.postalCode});
+  Results({required this.code, required this.name, required this.costs});
 
-  Results.fromJson(Map<String, dynamic> json) {
-    cityId = json['city_id'];
-    provinceId = json['province_id'];
-    province = json['province'];
-    type = json['type'];
-    cityName = json['city_name'];
-    postalCode = json['postal_code'];
-  }
+  factory Results.fromJson(Map<String, dynamic> json) => Results(
+        code: json["code"],
+        name: json["name"],
+        costs: List<Costs>.from(json["costs"].map((x) => Costs.fromJson(x))),
+      );
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['city_id'] = this.cityId;
-    data['province_id'] = this.provinceId;
-    data['province'] = this.province;
-    data['type'] = this.type;
-    data['city_name'] = this.cityName;
-    data['postal_code'] = this.postalCode;
-    return data;
-  }
+  Map<String, dynamic> toJson() => {
+        "code": code,
+        "name": name,
+        "costs": List<dynamic>.from(costs.map((x) => x.toJson())),
+      };
+}
+
+class RajaOngkir {
+  // final Query query;
+  // final Status status;
+  final List<Results> results;
+
+  RajaOngkir({
+    // required this.status,
+    required this.results,
+  });
+
+  factory RajaOngkir.fromJson(Map<String, dynamic> json) => RajaOngkir(
+        // query: Query.fromJson(json["query"]),
+        // status: Status.fromJson(json["status"]),
+        results:
+            List<Results>.from(json["results"].map((x) => Results.fromJson(x))),
+      );
+
+  Map<String, dynamic> toJson() => {
+        "results": List<dynamic>.from(results.map((x) => x.toJson())),
+      };
+}
+
+class CostModel {
+  final RajaOngkir rajaOngkir;
+
+  CostModel({
+    required this.rajaOngkir,
+  });
+
+  factory CostModel.fromJson(Map<String, dynamic> json) =>
+      CostModel(rajaOngkir: RajaOngkir.fromJson(json["rajaongkir"]));
+
+  Map<String, dynamic> toJson() => {
+        "rajaongkir": rajaOngkir,
+      };
 }

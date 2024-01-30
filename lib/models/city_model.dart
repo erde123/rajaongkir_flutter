@@ -1,79 +1,53 @@
-class CityModel {
-  Rajaongkir? rajaongkir;
+// ignore_for_file: non_constant_identifier_names, unused_import, unnecessary_this, file_names
+import 'dart:ffi';
 
-  CityModel({this.rajaongkir});
-
-  CityModel.fromJson(Map<String, dynamic> json) {
-    rajaongkir = json['rajaongkir'] != null
-        ? Rajaongkir.fromJson(json['rajaongkir'])
-        : null;
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    if (rajaongkir != null) {
-      data['rajaongkir'] = rajaongkir!.toJson();
-    }
-    return data;
-  }
-}
-
-class Rajaongkir {
-  List<Results>? results;
-
-  Rajaongkir({this.results});
-
-  Rajaongkir.fromJson(Map<String, dynamic> json) {
-    if (json['results'] != null) {
-      results = <Results>[];
-      json['results'].forEach((v) {
-        results!.add(Results.fromJson(v));
-      });
-    }
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    if (results != null) {
-      data['results'] = results!.map((v) => v.toJson()).toList();
-    }
-    return data;
-  }
-}
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 
 class Results {
-  String? cityId;
-  String? provinceId;
-  String? province;
-  String? type;
-  String? cityName;
-  String? postalCode;
+  final String city_id;
+  final String type;
+  final String city_name;
 
-  Results(
-      {this.cityId,
-      this.provinceId,
-      this.province,
-      this.type,
-      this.cityName,
-      this.postalCode});
+  Results({required this.city_id, required this.type, required this.city_name});
 
-  Results.fromJson(Map<String, dynamic> json) {
-    cityId = json['city_id'];
-    provinceId = json['province_id'];
-    province = json['province'];
-    type = json['type'];
-    cityName = json['city_name'];
-    postalCode = json['postal_code'];
-  }
+  factory Results.fromJson(Map<String, dynamic> json) => Results(
+        city_id: json["city_id"],
+        type: json["type"],
+        city_name: json["city_name"],
+      );
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['city_id'] = cityId;
-    data['province_id'] = provinceId;
-    data['province'] = province;
-    data['type'] = type;
-    data['city_name'] = cityName;
-    data['postal_code'] = postalCode;
-    return data;
-  }
+  Map<String, dynamic> toJson() => {
+        city_id: city_id,
+        type: type,
+        city_name: city_name,
+      };
+}
+
+class RajaOngkir {
+  final List<Results> results;
+
+  RajaOngkir({
+    required this.results,
+  });
+
+  factory RajaOngkir.fromJson(Map<String, dynamic> json) => RajaOngkir(
+        results:
+            List<Results>.from(json["results"].map((x) => Results.fromJson(x))),
+      );
+
+  Map<String, dynamic> toJson() => {
+        "results": List<dynamic>.from(results.map((x) => x.toJson())),
+      };
+}
+
+class CityModel {
+  final RajaOngkir rajaOngkir;
+
+  CityModel({required this.rajaOngkir});
+
+  factory CityModel.fromJson(Map<String, dynamic> json) =>
+      CityModel(rajaOngkir: RajaOngkir.fromJson(json["rajaongkir"]));
+
+  Map<String, dynamic> toJson() => {"rajaongkir": rajaOngkir};
 }
