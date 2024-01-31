@@ -1,20 +1,3 @@
-// "results":[
-//          {
-//             "code":"jne",
-//             "name":"Jalur Nugraha Ekakurir (JNE)",
-//             "costs":[
-//                {
-//                   "service":"OKE",
-//                   "description":"Ongkos Kirim Ekonomis",
-//                   "cost":[
-//                      {
-//                         "value":38000,
-//                         "etd":"4-5",
-//                         "note":""
-//                      }
-//                   ]
-//                },
-
 // ignore_for_file: non_constant_identifier_names, unused_import, unnecessary_this, file_names
 import 'dart:ffi';
 

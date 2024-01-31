@@ -1,4 +1,4 @@
-// ignore_for_file: unused_import, prefer_const_constructors, prefer_const_literals_to_create_immutables, non_constant_identifier_names, prefer_typing_uninitialized_variables, avoid_web_libraries_in_flutter, unnecessary_string_interpolations, unused_local_variable
+// ignore_for_file: unused_import, prefer_const_constructors, prefer_const_literals_to_create_immutables, non_constant_identifier_names, prefer_typing_uninitialized_variables, avoid_web_libraries_in_flutter, unnecessary_string_interpolations, unused_local_variable, sort_child_properties_last
 import 'dart:ffi';
 import 'dart:io';
 import 'dart:collection';
@@ -10,21 +10,9 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:drop_down_search_field/drop_down_search_field.dart';
 import 'package:dropdown_search/dropdown_search.dart';
-import 'package:rajaongkir_flutter/data/data.dart';
-import 'package:rajaongkir_flutter/models/cost_model.dart';
-
-var kota_asal = "1";
-var kota_tujuan = "2";
-var berat = 1200;
-var kurir = "jne";
-
-void main() => runApp(const ProviderScope(
-        child: CostPage(
-      origin: "1",
-      destination: "2",
-      berat: 1200,
-      kurir: "jne",
-    )));
+import 'package:rajaongkir_flutter/Pages/home_page.dart';
+import 'package:rajaongkir_flutter/resources/providers/cost_providers.dart';
+import 'package:rajaongkir_flutter/resources/models/cost_model.dart';
 
 class CostPage extends ConsumerStatefulWidget {
   final String origin;
@@ -45,17 +33,17 @@ class CostPage extends ConsumerStatefulWidget {
 }
 
 class _CostPageState extends ConsumerState<CostPage> {
-  late List<String> query;
+  late Map<String, dynamic> query;
 
   @override
   void initState() {
     super.initState();
-    query = [
-      widget.origin,
-      widget.destination,
-      widget.berat.toString(),
-      widget.kurir
-    ];
+    query = {
+      'origin': widget.origin,
+      'destination': widget.destination,
+      'berat': widget.berat.toString(),
+      'kurir': widget.kurir,
+    };
   }
 
   @override
@@ -63,7 +51,22 @@ class _CostPageState extends ConsumerState<CostPage> {
     final costData = ref.watch(costDataProvider(query));
     return MaterialApp(
       home: Scaffold(
-        appBar: AppBar(),
+        appBar: AppBar(
+          leading: GestureDetector(
+            child: Icon(
+              Icons.arrow_back_ios_sharp,
+            ),
+            onTap: () {
+              Navigator.pop(context);
+              // Navigator.push(
+              //   context,
+              //   MaterialPageRoute(
+              //     builder: (context) => HomePage(),
+              //   ),
+              // );
+            },
+          ),
+        ),
         body: costData.when(
           data: (costData) {
             List<String> costNames =
