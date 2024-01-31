@@ -10,18 +10,14 @@ import 'package:http/http.dart' as http;
 import 'package:drop_down_search_field/drop_down_search_field.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:rajaongkir_flutter/components/DropDownCourier.dart';
-import 'package:rajaongkir_flutter/components/DropDownCity.dart';
+import 'package:rajaongkir_flutter/components/dropdown_courier.dart';
+import 'package:rajaongkir_flutter/components/dropdown_city.dart';
 import 'package:rajaongkir_flutter/Pages/cost_page.dart';
 import 'package:rajaongkir_flutter/resources/providers/city_providers.dart';
 import 'package:rajaongkir_flutter/resources/providers/cost_providers.dart';
 import 'package:rajaongkir_flutter/resources/models/city_model.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-
-var kota_asal = "1";
-var kota_tujuan = "2";
-var berat = 1200;
-var kurir = "jne";
+import 'package:cool_alert/cool_alert.dart';
 
 class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
@@ -31,6 +27,10 @@ class HomePage extends ConsumerStatefulWidget {
 }
 
 class _HomePageState extends ConsumerState<HomePage> {
+  var kota_asal;
+  var kota_tujuan;
+  var berat;
+  var kurir;
   @override
   void initState() {
     super.initState();
@@ -44,111 +44,129 @@ class _HomePageState extends ConsumerState<HomePage> {
       title: "Raja Ongkir",
       home: Scaffold(
         appBar: AppBar(),
-        body: cityData.when(
-          data: (cityData) {
-            List<String> cityNames =
-                cityData.rajaOngkir.results.map((e) => e.city_name).toList();
-            return Column(
-              children: [
-                // DropDown Kota Asal
-                DropDownCity(
-                  item: cityNames,
-                  hintText: "Kota Asal",
-                  labelText: "Pilih Kota Asal",
-                  onChanged: (value) {
-                    for (int i = 0;
-                        i < cityData.rajaOngkir.results.length - 1;
-                        i++) {
-                      if (value == cityData.rajaOngkir.results[i].city_name) {
-                        kota_asal = cityData.rajaOngkir.results[i].city_id;
+        body: Padding(
+          padding: const EdgeInsets.only(left: 16.0, right: 16.0),
+          child: cityData.when(
+            data: (cityData) {
+              List<String> cityNames =
+                  cityData.rajaOngkir.results.map((e) => e.city_name).toList();
+              return Column(
+                children: [
+                  // DropDown Kota Asal
+                  DropDownCity(
+                    item: cityNames,
+                    hintText: "Kota Asal",
+                    labelText: "Pilih Kota Asal",
+                    onChanged: (value) {
+                      for (int i = 0;
+                          i < cityData.rajaOngkir.results.length - 1;
+                          i++) {
+                        if (value == cityData.rajaOngkir.results[i].city_name) {
+                          kota_asal = cityData.rajaOngkir.results[i].city_id;
+                        }
                       }
-                    }
-                    print(kota_asal);
-                  },
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                // DropDown Kota Tujuan
-                DropDownCity(
-                  item: cityNames,
-                  hintText: "Kota Tujuan",
-                  labelText: "Pilih Kota Tujuan",
-                  onChanged: (value) {
-                    for (int i = 0;
-                        i < cityData.rajaOngkir.results.length - 1;
-                        i++) {
-                      if (value == cityData.rajaOngkir.results[i].city_name) {
-                        kota_tujuan = cityData.rajaOngkir.results[i].city_id;
-                      }
-                    }
-                    print(kota_tujuan);
-                  },
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                TextField(
-                  //input hanya angka
-                  keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
-                    labelText: "Berat Paket (gram)",
-                    hintText: "Berat Paket",
+                      print(kota_asal);
+                    },
                   ),
-                  onChanged: (text) {
-                    berat = int.parse(text);
-                    print(berat);
-                  },
-                ),
-                // DropDown Kurir
-                DropDownCourier(
-                  item: ['JNE', 'POS INDONESIA', 'TIKI'],
-                  hintText: "Pilih Jenis Kurir",
-                  labelText: "Jenis Kurir",
-                  onChanged: (value) {
-                    if (value == 'JNE') {
-                      kurir = 'jne';
-                    } else if (value == 'POS INDONESIA') {
-                      kurir = 'pos';
-                    } else {
-                      kurir = 'tiki';
-                    }
-                    print(kurir);
-                  },
-                ),
-                TextButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => CostPage(
-                          origin: kota_asal,
-                          destination: kota_tujuan,
-                          berat: berat,
-                          kurir: kurir,
-                        ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  // DropDown Kota Tujuan
+                  DropDownCity(
+                    item: cityNames,
+                    hintText: "Kota Tujuan",
+                    labelText: "Pilih Kota Tujuan",
+                    onChanged: (value) {
+                      for (int i = 0;
+                          i < cityData.rajaOngkir.results.length - 1;
+                          i++) {
+                        if (value == cityData.rajaOngkir.results[i].city_name) {
+                          kota_tujuan = cityData.rajaOngkir.results[i].city_id;
+                        }
+                      }
+                      print(kota_tujuan);
+                    },
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  TextField(
+                    //input hanya angka
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(
+                      labelText: "Berat Paket (gram)",
+                      hintText: "Berat Paket",
+                      labelStyle: TextStyle(
+                        fontSize: 12,
                       ),
-                    );
-                    // Navigator.pushReplacement(
-                    //   context,
-                    //   MaterialPageRoute(
-                    //     builder: (context) => CostPage(
-                    //       origin: kota_asal,
-                    //       destination: kota_tujuan,
-                    //       berat: berat,
-                    //       kurir: kurir,
-                    //     ),
-                    //   ),
-                    // );
-                  },
-                  child: Text("Cek Ongkir"),
-                )
-              ],
-            );
-          },
-          error: (error, s) => Text(error.toString()),
-          loading: () => const Center(
-            child: CircularProgressIndicator(),
+                    ),
+                    onChanged: (text) {
+                      berat = int.parse(text);
+                      print(berat);
+                    },
+                  ),
+                  // DropDown Kurir
+                  DropDownCourier(
+                    item: ['JNE', 'POS INDONESIA', 'TIKI'],
+                    hintText: "Pilih Jenis Kurir",
+                    labelText: "Jenis Kurir",
+                    onChanged: (value) {
+                      if (value == 'JNE') {
+                        kurir = 'jne';
+                      } else if (value == 'POS INDONESIA') {
+                        kurir = 'pos';
+                      } else {
+                        kurir = 'tiki';
+                      }
+                      print(kurir);
+                    },
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      if (kota_asal == null ||
+                          kota_tujuan == null ||
+                          berat == null ||
+                          kurir == null) {
+                        CoolAlert.show(
+                          context: context,
+                          type: CoolAlertType.error,
+                          title: "Masih Ada yang Kosong",
+                          text: "Harap diisi semuanya",
+                        );
+                      } else {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => CostPage(
+                              origin: kota_asal,
+                              destination: kota_tujuan,
+                              berat: berat,
+                              kurir: kurir,
+                            ),
+                          ),
+                        );
+                        // Navigator.pushReplacement(
+                        //   context,
+                        //   MaterialPageRoute(
+                        //     builder: (context) => CostPage(
+                        //       origin: kota_asal,
+                        //       destination: kota_tujuan,
+                        //       berat: berat,
+                        //       kurir: kurir,
+                        //     ),
+                        //   ),
+                        // );
+                      }
+                    },
+                    child: Text("Cek Ongkir"),
+                  )
+                ],
+              );
+            },
+            error: (error, s) => Text(error.toString()),
+            loading: () => const Center(
+              child: CircularProgressIndicator(),
+            ),
           ),
         ),
       ),
