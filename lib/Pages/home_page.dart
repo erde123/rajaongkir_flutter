@@ -14,7 +14,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rajaongkir_flutter/components/dropdown_courier.dart';
 import 'package:rajaongkir_flutter/components/dropdown_city.dart';
 import 'package:rajaongkir_flutter/Pages/cost_page.dart';
-import 'package:rajaongkir_flutter/components/formatters/NumericFormatter.dart';
+import 'package:rajaongkir_flutter/components/formatters/numeric_formatter.dart';
 import 'package:rajaongkir_flutter/resources/providers/city_providers.dart';
 import 'package:rajaongkir_flutter/resources/providers/cost_providers.dart';
 import 'package:rajaongkir_flutter/resources/models/city_model.dart';
