@@ -4,6 +4,7 @@ import 'dart:io';
 import 'dart:collection';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
@@ -13,6 +14,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rajaongkir_flutter/components/dropdown_courier.dart';
 import 'package:rajaongkir_flutter/components/dropdown_city.dart';
 import 'package:rajaongkir_flutter/Pages/cost_page.dart';
+import 'package:rajaongkir_flutter/components/formatters/NumericFormatter.dart';
 import 'package:rajaongkir_flutter/resources/providers/city_providers.dart';
 import 'package:rajaongkir_flutter/resources/providers/cost_providers.dart';
 import 'package:rajaongkir_flutter/resources/models/city_model.dart';
@@ -24,6 +26,7 @@ class HomePage extends ConsumerStatefulWidget {
 
   @override
   ConsumerState<HomePage> createState() => _HomePageState();
+  getState() => _HomePageState;
 }
 
 class _HomePageState extends ConsumerState<HomePage> {
@@ -31,10 +34,17 @@ class _HomePageState extends ConsumerState<HomePage> {
   var kota_tujuan;
   var berat;
   var kurir;
+  var nama_kota_asal;
+  var nama_kota_tujuan;
+  var nama_kurir;
+  refresh () {
+    setState(() {
+      
+    });
+  }
   @override
   void initState() {
     super.initState();
-    // futureCostModel = fetchCost();
   }
 
   @override
@@ -65,6 +75,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                           kota_asal = cityData.rajaOngkir.results[i].city_id;
                         }
                       }
+                      nama_kota_asal = value;
                       print(kota_asal);
                     },
                   ),
@@ -84,6 +95,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                           kota_tujuan = cityData.rajaOngkir.results[i].city_id;
                         }
                       }
+                      nama_kota_tujuan = value;
                       print(kota_tujuan);
                     },
                   ),
@@ -93,6 +105,10 @@ class _HomePageState extends ConsumerState<HomePage> {
                   TextField(
                     //input hanya angka
                     keyboardType: TextInputType.number,
+                    inputFormatters: <TextInputFormatter>[
+                      FilteringTextInputFormatter.digitsOnly,
+                      NumericRangeFormatter(min: 1, max: 30000),
+                    ],
                     decoration: InputDecoration(
                       labelText: "Berat Paket (gram)",
                       hintText: "Berat Paket",
@@ -118,6 +134,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                       } else {
                         kurir = 'tiki';
                       }
+                      nama_kurir = value;
                       print(kurir);
                     },
                   ),
@@ -133,7 +150,10 @@ class _HomePageState extends ConsumerState<HomePage> {
                           title: "Masih Ada yang Kosong",
                           text: "Harap diisi semuanya",
                         );
-                      } else {
+                      }
+                      // else if (berat) {
+                      // }
+                      else {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -142,6 +162,9 @@ class _HomePageState extends ConsumerState<HomePage> {
                               destination: kota_tujuan,
                               berat: berat,
                               kurir: kurir,
+                              nama_kota_asal: nama_kota_asal,
+                              nama_kota_tujuan: nama_kota_tujuan,
+                              nama_kurir: nama_kurir,
                             ),
                           ),
                         );
@@ -163,7 +186,19 @@ class _HomePageState extends ConsumerState<HomePage> {
                 ],
               );
             },
-            error: (error, s) => Text(error.toString()),
+            error: (error, s) => Column(
+              children: [
+                Text("Oops, something unexpected happen"),
+                FloatingActionButton(
+                  backgroundColor: Colors.blueAccent,
+                  onPressed: () {
+                    HomePage().getState().refresh();
+                    
+                  },
+                  child: Icon(Icons.refresh),
+                ),
+              ],
+            ),
             loading: () => const Center(
               child: CircularProgressIndicator(),
             ),

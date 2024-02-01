@@ -72,24 +72,59 @@ class Results {
       };
 }
 
+class OriginDetails {
+  final String city_name;
+  OriginDetails({
+    required this.city_name,
+  });
+
+  factory OriginDetails.fromJson(Map<String, dynamic> json) => OriginDetails(
+        city_name: json["city_name"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "city_name": city_name,
+      };
+}
+
+class DestinationDetails {
+  final String city_name;
+  DestinationDetails({
+    required this.city_name,
+  });
+
+  factory DestinationDetails.fromJson(Map<String, dynamic> json) =>
+      DestinationDetails(
+        city_name: json["city_name"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "city_name": city_name,
+      };
+}
+
 class RajaOngkir {
-  // final Query query;
-  // final Status status;
+  final OriginDetails originDetails;
+  final DestinationDetails destinationDetails;
   final List<Results> results;
 
   RajaOngkir({
-    // required this.status,
+    required this.originDetails,
+    required this.destinationDetails,
     required this.results,
   });
 
   factory RajaOngkir.fromJson(Map<String, dynamic> json) => RajaOngkir(
-        // query: Query.fromJson(json["query"]),
-        // status: Status.fromJson(json["status"]),
+        originDetails: OriginDetails.fromJson(json["origin_details"]),
+        destinationDetails:
+            DestinationDetails.fromJson(json["destination_details"]),
         results:
             List<Results>.from(json["results"].map((x) => Results.fromJson(x))),
       );
 
   Map<String, dynamic> toJson() => {
+        "origin_details": originDetails,
+        "destination_details": destinationDetails,
         "results": List<dynamic>.from(results.map((x) => x.toJson())),
       };
 }

@@ -23,12 +23,16 @@ class CostApiService {
       }),
     );
     if (response.statusCode == 200) {
-      print("halo");
+      print("Request Berhasil");
       print(response.body);
       final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
       return CostModel.fromJson(responseJson);
+    } else if (response.statusCode == 500) {
+      print("Server Error 500");
+      print(response.body);
+      throw Exception("Internal Server Error. Please try again later.");
     } else {
-      print("halo");
+      print("UnknownError");
       print(response.body);
       throw Exception(response.reasonPhrase);
     }
